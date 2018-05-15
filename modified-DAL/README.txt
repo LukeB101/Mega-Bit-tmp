@@ -1,5 +1,7 @@
 This folder contain our modified Micro:bit-DAL code.
 
+Demonstrations are in the DEMO directory and include links to YouTube videos.
+
 Edits are surrounded by commented dashs: (//------------------------)
 
 Files edited:
