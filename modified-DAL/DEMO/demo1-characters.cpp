@@ -4,7 +4,6 @@ MicroBit uBit;
 
 int main()
 {
-    // Initialise the micro:bit runtime.
     uBit.init();
 
 	int number = 0;
