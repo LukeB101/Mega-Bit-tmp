@@ -1,4 +1,4 @@
-This folder contain our modified Micro:bit-DAL code.
+This folder contains our modified Micro:bit-DAL code.
 
 Demonstrations are in the DEMO directory and include links to YouTube videos.
 
@@ -9,14 +9,14 @@ Files edited:
 
 
 Lines 40-128:
-    This creates the I2C communication protocol with the I2C led matrix. Note that this is unique to the HT16K33 LED matrix driver.
+    This creates and initialises the I2C communication protocol with the I2C led matrix. Note that this is unique to the HT16K33 LED matrix driver.
     
 Lines 692-722:
-    Edits to the print function so also writes the bitmap to the I2C matrix
+    Edits to the print function so it also writes the bitmap to the I2C matrix.
     
     
 TO DO:
-    Implement changes to animation event (to handle scrolling text)
     Implement changes to printImage function
     Implement brightness function
+    Implement changes to animation event (to handle scrolling text)
    
