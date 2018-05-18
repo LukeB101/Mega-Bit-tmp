@@ -26,6 +26,7 @@ DONE:
     Implement changes to print function (for printing characters)
     Implement changes to paste function (for printing images)
     Implement setPixelValue function
+    Add setPixelValue on and off function
     Implement brightness function
     
    
