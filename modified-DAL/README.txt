@@ -17,6 +17,12 @@ Lines 692-722:
     
 TO DO:
     Implement changes to printImage function
-    Implement brightness function
     Implement changes to animation event (to handle scrolling text)
+    Implement rotation function
+    
+DONE:
+    Run I2C display from DAL
+    Implement changes to print function (for characters)
+    Implement brightness function
+    
    
