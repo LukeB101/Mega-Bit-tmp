@@ -17,6 +17,7 @@ Lines 692-722:
     
 TO DO:
     Make paste function not clear whole display before printing
+    Add setPixelValue brightness function
     Implement changes to animation event (to handle scrolling text)
     Implement rotation function
     
