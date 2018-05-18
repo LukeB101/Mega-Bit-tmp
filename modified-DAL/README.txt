@@ -16,7 +16,6 @@ Lines 692-722:
     
     
 TO DO:
-    Implement changes to printImage function
     Implement setPixelValue function
     Implement paste function
     Implement changes to animation event (to handle scrolling text)
@@ -24,7 +23,8 @@ TO DO:
     
 DONE:
     Run I2C display from DAL
-    Implement changes to print function (for characters)
+    Implement changes to print function (for printing characters)
+    Implement changes to paste function (for printing images)
     Implement brightness function
     
    
