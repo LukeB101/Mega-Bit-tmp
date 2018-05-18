@@ -17,7 +17,6 @@ Lines 692-722:
     
 TO DO:
     Implement setPixelValue function
-    Implement paste function
     Implement changes to animation event (to handle scrolling text)
     Implement rotation function
     
