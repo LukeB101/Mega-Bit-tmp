@@ -48,8 +48,6 @@ class MicroBitImage
 {
     ImageData *ptr;     // Pointer to payload data
 
-
-
     /**
       * Internal constructor which provides sanity checking and initialises class properties.
       *
@@ -71,8 +69,10 @@ class MicroBitImage
 
 
 	//-----------------------------------------------------------------------------------------------------
-	void initialise();
-	void fill(char tmp);
+	void update_Brightness(uint8_t i2cBrightness);
+	//void initialise();
+	//void set_Brightness(uint8_t i2cBrightness);
+	//void fill(char tmp);
 	//-----------------------------------------------------------------------------------------------------
 
 
