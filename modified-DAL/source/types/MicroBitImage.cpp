@@ -144,16 +144,19 @@ class StartUp
 public:
 	StartUp()
 	{
-		buffer[0] = 0x00;
-		for (uint8_t i = 0; i<16; i++) {
-			buffer[i + 1] = 0x00;
-		}
-		char tmp[1] = { _HT16K33_OSCILATOR_ON };
-		i2c.write(address, tmp, 1);
-		set_blink_rate(0);
-		set_Brightness(15);
 
-		i2cPresent = true;
+		if ( i2c.read(0xE0, 0, 1) == 0 ) { i2cPresent = true; }
+
+		if (i2cPresent) {
+			buffer[0] = 0x00;
+			for (uint8_t i = 0; i < 16; i++) {
+				buffer[i + 1] = 0x00;
+			}
+			char tmp[1] = { _HT16K33_OSCILATOR_ON };
+			i2c.write(address, tmp, 1);
+			set_blink_rate(0);
+			set_Brightness(15);
+		}
 	}
 };
 
