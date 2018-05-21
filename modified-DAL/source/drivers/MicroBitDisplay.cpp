@@ -39,52 +39,6 @@ DEALINGS IN THE SOFTWARE.
 #include "MicroBitI2C.h"
 
 const int greyScaleTimings[MICROBIT_DISPLAY_GREYSCALE_BIT_DEPTH] = {1, 23, 70, 163, 351, 726, 1476, 2976};
-//------------------------------------------------------------------------------------------------------------------------------------------
-/*char buffer[17] = {};
-uint8_t address = 0xE0;
-uint8_t _HT16K33_OSCILATOR_ON = 0x21;
-uint8_t _HT16K33_BLINK_CMD = 0x80;
-uint8_t _HT16K33_BLINK_DISPLAYON = 0x01;
-uint8_t _HT16K33_CMD_BRIGHTNESS = 0xE0;
-
-MicroBitI2C i2c(I2C_SDA0, I2C_SCL0);
-
-void _write_cmd(char cmd[]) {
-	i2c.write(address, cmd, 1);
-}
-
-void set_blink_rate(uint8_t rate) {
-	rate = rate & (uint8_t)0x02;
-	uint8_t command = _HT16K33_BLINK_CMD | _HT16K33_BLINK_DISPLAYON | rate << 1;
-	char command1[1] = { command };
-	_write_cmd(command1);
-}
-
-void set_Brightness(uint8_t b) {
-	b = b & 0x0F;
-	uint8_t tmp = _HT16K33_CMD_BRIGHTNESS | b;
-	char tmp1[1] = { tmp };
-	_write_cmd(tmp1);
-}
-
-void fill(char tmp) {
-	for (uint8_t i = 0; i<10; i++) {
-		buffer[i + 1] = tmp;
-		i++;
-	}
-	i2c.write(address, buffer, 17, true);
-}
-
-void initialise() {
-	buffer[0] = 0x00;
-	fill(0x00);
-	char tmp[1] = { _HT16K33_OSCILATOR_ON };
-	_write_cmd(tmp);
-	set_blink_rate(0);
-	set_Brightness(15);
-}*/
-
-//----------------------------------------------------------------------------------------------------------------------------------------
 
 /**
   * Constructor.
