@@ -38,6 +38,7 @@ DEALINGS IN THE SOFTWARE.
 #include "MicroBitImage.h"
 #include "MicroBitI2C.h"
 
+
 const int greyScaleTimings[MICROBIT_DISPLAY_GREYSCALE_BIT_DEPTH] = {1, 23, 70, 163, 351, 726, 1476, 2976};
 
 /**
@@ -1028,6 +1029,11 @@ int MicroBitDisplay::setBrightness(int b)
 
     this->brightness = b;
 
+	//-------------------------------------------------------------------------------------------------------------------
+	uint8_t i2cBrightness = b/17; //0-15
+	image.update_Brightness(i2cBrightness);
+	//-------------------------------------------------------------------------------------------------------------------
+
     return MICROBIT_OK;
 }
 
@@ -1096,6 +1102,10 @@ int MicroBitDisplay::getBrightness()
 void MicroBitDisplay::rotateTo(DisplayRotation rotation)
 {
     this->rotation = rotation;
+
+	//-------------------------------------------------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------------------------------------------------
 }
 
 /**
