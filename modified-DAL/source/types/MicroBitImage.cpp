@@ -49,6 +49,7 @@ uint8_t _HT16K33_OSCILATOR_ON = 0x21;
 uint8_t _HT16K33_BLINK_CMD = 0x80;
 uint8_t _HT16K33_BLINK_DISPLAYON = 0x01;
 uint8_t _HT16K33_CMD_BRIGHTNESS = 0xE0;
+bool i2cPresent = false;
 
 
 void set_blink_rate(uint8_t rate) {
@@ -58,14 +59,21 @@ void set_blink_rate(uint8_t rate) {
 	i2c.write(address, command1, 1);
 }
 
-void set_Brightness(uint8_t b) {
-	b = b & 0x0F;
-	uint8_t tmp = _HT16K33_CMD_BRIGHTNESS | b;
+void set_Brightness(uint8_t i2cBrightness) {
+	i2cBrightness = i2cBrightness & 0x0F;
+	uint8_t tmp = _HT16K33_CMD_BRIGHTNESS | i2cBrightness;
 	char tmp1[1] = { tmp };
 	i2c.write(address, tmp1, 1);
 }
 
-void MicroBitImage::fill(char tmp) {
+void MicroBitImage::update_Brightness(uint8_t i2cBrightness) {
+	i2cBrightness = i2cBrightness & 0x0F;
+	uint8_t tmp = _HT16K33_CMD_BRIGHTNESS | i2cBrightness;
+	char tmp1[1] = { tmp };
+	i2c.write(address, tmp1, 1);
+}
+
+void fill(char tmp) {
 	for (uint8_t i = 0; i<10; i++) {
 		buffer[i + 1] = tmp;
 		i++;
@@ -73,23 +81,33 @@ void MicroBitImage::fill(char tmp) {
 	i2c.write(address, buffer, 17);
 }
 
-void MicroBitImage::initialise() {
+void initialise() {
 	buffer[0] = 0x00;
-	fill(0x00);
+	for(uint8_t i = 0; i<16; i++) {
+		buffer[i + 1] = 0x00;
+	}
 	char tmp[1] = { _HT16K33_OSCILATOR_ON };
 	i2c.write(address, tmp, 1);
 	set_blink_rate(0);
 	set_Brightness(15);
+
+	i2cPresent = true;
 }
 
 
-void _pixel(int x, int y) {
+void _pixel(int x, int y, bool on) {
 	char mask = 1 << x;
-	buffer[y * 2 + 1] = (buffer[y * 2 + 1]) | (mask & 0xff);
-	buffer[y * 2 + 2] = (buffer[y * 2 + 2]) | (mask >> 8);
+	if (on) {
+		buffer[y * 2 + 1] = (buffer[y * 2 + 1]) | (mask & 0xff);
+		buffer[y * 2 + 2] = (buffer[y * 2 + 2]) | (mask >> 8);
+	}
+	else {
+		buffer[y * 2 + 1] = (buffer[y * 2 + 1]) & ~(mask & 0xff);
+		buffer[y * 2 + 2] = (buffer[y * 2 + 2]) & ~(mask >> 8);
+	}
 }
 
-void pixel(int x, int y) {
+void pixel(int x, int y, bool on) {
 	//if (x<0 || x>4)
 	//	return;
 	//if (y<0 || y>4)
@@ -97,7 +115,7 @@ void pixel(int x, int y) {
 	//x = (x - 1) % 8;
 	if (x == 0) { x = 7; }
 	else { x = x - 1; }
-	_pixel(x, y);
+	_pixel(x, y, on);
 }
 
 void bufferClear() {
@@ -107,19 +125,35 @@ void bufferClear() {
 	}
 }
 
+/*
+void i2cPrintBitmap() {
+	for (int z = 0; z < 25; z++) {
+		for (int y = 0; y < 5; y++) {
+			for (int x = 0; x < 5; x++) {
+				if (this->getBitmap()[y*getWidth() + x])
+					pixel(x, y);
+			}
+		}
+	}
+	i2c.write(address, buffer, 17);
+	bufferClear();
+}*/
+
 class StartUp
 {
 public:
 	StartUp()
 	{
 		buffer[0] = 0x00;
-		for(uint8_t i = 0; i<16; i++) {
+		for (uint8_t i = 0; i<16; i++) {
 			buffer[i + 1] = 0x00;
 		}
 		char tmp[1] = { _HT16K33_OSCILATOR_ON };
 		i2c.write(address, tmp, 1);
 		set_blink_rate(0);
 		set_Brightness(15);
+
+		i2cPresent = true;
 	}
 };
 
@@ -485,6 +519,16 @@ int MicroBitImage::setPixelValue(int16_t x , int16_t y, uint8_t value)
         return MICROBIT_INVALID_PARAMETER;
 
     this->getBitmap()[y*getWidth()+x] = value;
+
+	//------------------------------------------------------------------------------------------------------------
+	if (i2cPresent) {
+		bool on;
+		on = (value != 0) ? true : false;
+		pixel(x, y, on);
+		i2c.write(address, buffer, 17);
+	}
+	//------------------------------------------------------------------------------------------------------------
+
     return MICROBIT_OK;
 }
 
@@ -556,6 +600,20 @@ int MicroBitImage::printImage(int16_t width, int16_t height, const uint8_t *bitm
         pOut += this->getWidth();
     }
 
+	//-------------------------------------------------------------------------------------------------
+	if (i2cPresent) {
+		bufferClear();
+		for (int z = 0; z < 25; z++) {
+			for (int y = 0; y < 5; y++) {
+				for (int x = 0; x < 5; x++) {
+					if (this->getBitmap()[y*getWidth() + x])
+						pixel(x, y, true);
+				}
+			}
+		}
+		i2c.write(address, buffer, 17);
+	}
+	//-------------------------------------------------------------------------------------------------
 	
     return MICROBIT_OK;
 }
@@ -638,6 +696,21 @@ int MicroBitImage::paste(const MicroBitImage &image, int16_t x, int16_t y, uint8
         }
     }
 
+	//-------------------------------------------------------------------------------------------------
+	if (i2cPresent) {
+		bufferClear();
+		for (int z = 0; z < 25; z++) {
+			for (int y = 0; y < 5; y++) {
+				for (int x = 0; x < 5; x++) {
+					if (getBitmap()[y*getWidth() + x])
+						pixel(x, y, true);
+				}
+			}
+		}
+		i2c.write(address, buffer, 17);
+	}
+	//-------------------------------------------------------------------------------------------------
+
     return pxWritten;
 }
 
@@ -691,34 +764,18 @@ int MicroBitImage::print(char c, int16_t x, int16_t y)
 	}
 
 	//------------------------------------------------------------------------------------------------------------
-	//initialise();
-	/*bool pixels[5][5] = { { 1,0,0,0,0 },{ 0,1,0,0,0 },{ 0,0,1,0,0 },{ 0,0,0,1,0 },{ 0,0,0,0,1 } };
-
-
-	for (int y = 0; y < 5; y++) {
-	for (int x = 0; x < 5; x++) {
-	if (pixels[y][x]) {
-	pixel(x, y);
-	}
-	}
-	}*/
-
-	//char pixels[5] = { 0x1f, 0x02, 0x04, 0x08, 0x10 };
-	char pixels[25];
-	
-	for (int z = 0; z < 25; z++) {
-		for (int y = 0; y < 5; y++) {
-			for (int x = 0; x < 5; x++) {
-				if(this->getBitmap()[y*getWidth() + x])
-				pixel(x, y);
+	if (i2cPresent) {
+		bufferClear();
+		for (int z = 0; z < 25; z++) {
+			for (int y = 0; y < 5; y++) {
+				for (int x = 0; x < 5; x++) {
+					if (this->getBitmap()[y*getWidth() + x])
+						pixel(x, y, true);
+				}
 			}
 		}
+		i2c.write(address, buffer, 17);
 	}
-
-
-
-	i2c.write(address, buffer, 17);
-	bufferClear();
 	//------------------------------------------------------------------------------------------------------------
 
 	
