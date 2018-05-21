@@ -16,7 +16,6 @@ Lines 692-722:
     
     
 TO DO:
-    Make paste function not clear whole display before printing
     Add setPixelValue brightness function
     Implement changes to animation event (to handle scrolling text)
     Implement rotation function
@@ -25,8 +24,10 @@ DONE:
     Run I2C display from DAL
     Implement changes to print function (for printing characters)
     Implement changes to paste function (for printing images)
+    Make paste function not clear whole display before printing
     Implement setPixelValue function
     Add setPixelValue on and off function
     Implement brightness function
+    Add I2C device sensing
     
    
