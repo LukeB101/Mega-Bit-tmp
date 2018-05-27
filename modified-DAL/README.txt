@@ -15,7 +15,6 @@ Lines 40-167:
     
 TO DO:
     Add setPixelValue brightness function
-    Implement changes to animation event (to handle scrolling text)
     Implement rotation function
     Tidy and optimise
     
@@ -28,5 +27,6 @@ DONE:
     Add setPixelValue on and off function
     Implement brightness function
     Add I2C device sensing
+    Implement changes to animation event (to handle scrolling text)
     
    
